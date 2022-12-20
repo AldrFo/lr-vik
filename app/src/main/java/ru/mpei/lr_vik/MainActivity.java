@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private Button playBtn;
     private Button removeBtn;
 
+    private boolean isRefreshClicked = false;
+    private String refreshedName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +42,20 @@ public class MainActivity extends AppCompatActivity {
         playBtn = findViewById(R.id.play);
         removeBtn = findViewById(R.id.deletePlayer);
 
+        refreshBtn.setOnClickListener(v -> {
+            if(!isRefreshClicked) {
+                refreshedName = nameEdit.getText().toString();
+                isRefreshClicked = true;
+                return;
+            }
+            int i = adapter.persons.indexOf(new Person(refreshedName, false));
+            Person p = adapter.persons.get(i);
+            adapter.persons.remove(i);
+            p.name = nameEdit.getText().toString();
+            adapter.persons.add(p);
+            isRefreshClicked = false;
+            adapter.notifyDataSetChanged();
+        });
         newBtn.setOnClickListener(v -> {
             adapter.persons.add(new Person(nameEdit.getText().toString(), false));
             adapter.notifyDataSetChanged();
